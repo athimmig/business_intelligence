@@ -5,6 +5,8 @@ from scrapy.contrib.loader import ItemLoader
 from movies.items import MovieItem
 from movies.items import MovieLoader
 
+import re # RegEx
+
 class MovieSpider(Spider):
    name = "movie_spider"
    allowed_domains = ["http://www.rottentomatoes.com/"]
@@ -31,14 +33,19 @@ class MovieSpider(Spider):
          #loader.add_xpath('title', 'td[3]/a/text()')
          #loader.add_xpath('review_count', 'td[4]/text()')
 
-         item['rank']   = movie.xpath('td[1]/text()').extract()
+         item['rank'] = movie.xpath('td[1]/text()').extract()
          item['rating'] = movie.xpath('td[2]/span/span[2]/text()').extract()
          item['title']  = movie.xpath('td[3]/a/text()').extract()
          item['review_count'] = movie.xpath('td[4]/text()').extract()
-            
+
+        # Extract the year
+         '''year = re.match('[0-9]{4}', item['title'])
+
+         if year is not None:
+            item['year'] = year'''
+
          items.append(item)
-         # don't forget the year
-         # item['year'] = ...
+
 
       return items
 
