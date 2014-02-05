@@ -1,0 +1,1 @@
+rm movies.json; scrapy crawl movie_spider -o movies.json -t json
