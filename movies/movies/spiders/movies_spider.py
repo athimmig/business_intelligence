@@ -2,52 +2,31 @@ from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
 
-from movies.items import MovieItem
-from movies.items import MovieLoader
+from movies.items import MovieItem, MovieLoader
 
 import re # RegEx
 
 class MovieSpider(Spider):
-   name = "movie_spider"
-   allowed_domains = ["http://www.rottentomatoes.com/"]
-   start_urls = ["http://www.rottentomatoes.com/top/bestofrt/?category=1"]
+    name = "movie_spider"
+    allowed_domains = ["http://www.rottentomatoes.com/"]
+    start_urls = ["http://www.rottentomatoes.com/top/bestofrt/?category=1"]
 
-   def parse(self, response):
-      sel = Selector(response)
+    def parse(self, response):
+        sel = Selector(response)
 
-      # not sure if this needs editing
-      movies = sel.xpath('//table[@class="left rt_table"]/tbody/tr')
-      
-      items = []
+        # not sure if this needs editing
+        movies = sel.xpath('//table[@class="left rt_table"]/tbody/tr')
 
-      for movie in movies:
-         # create a new movie record
-         #loader = MovieLoader(item = MovieItem(), response = response)
+        for movie in movies:
+            loader = ItemLoader(MovieItem(), response = response, selector = movie)
 
-         item = MovieItem()
+            loader.add_xpath('rank', 'td[1]/text()', re = r'{d}+') # exclude the '.'
+            loader.add_xpath('rating', 'td[2]/span/span[2]/text()', re = r'[^%]')
+            loader.add_xpath('title', 'td[3]/a/text()', re = r'.*(?= \([0-9]{4}\))')
+            loader.add_xpath('review_count', 'td[4]/text()')
+            loader.add_xpath('year', 'td[3]/a/text()', re = r'(?<=\()[0-9]{4}(?=\))')
 
-         # clean up the '.' at the end of the ranking
-         # get the ranking from the page, remove the '.', and convert to ascii
-         #loader.add_xpath('rank', 'td[1]/text()')
-         #loader.add_xpath('rating', 'td[2]/span/span[2]/text()')
-         #loader.add_xpath('title', 'td[3]/a/text()')
-         #loader.add_xpath('review_count', 'td[4]/text()')
-
-         item['rank'] = movie.xpath('td[1]/text()').extract()
-         item['rating'] = movie.xpath('td[2]/span/span[2]/text()').extract()
-         item['title']  = movie.xpath('td[3]/a/text()').extract()
-         item['review_count'] = movie.xpath('td[4]/text()').extract()
-
-        # Extract the year
-         '''year = re.match('[0-9]{4}', item['title'])
-
-         if year is not None:
-            item['year'] = year'''
-
-         items.append(item)
-
-
-      return items
+            yield loader.load_item()
 
 # I learned that when you output a file when running scrapy,
 # it just appends to the file instead of overwriting it. I had the correct output

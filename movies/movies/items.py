@@ -32,11 +32,19 @@ def serialize_year(value):
 # MovieItem is the extended class
 # Field is another object
 class MovieItem(Item):
+
+    # needs category
    rank     = Field(serializer = serialize_rank)
-   rating   = Field(serializer = serialize_rating)
-   title    = Field(serializer = serialize_title)
-   review_count = Field(serializer = serialize_review_count)
-   year     = Field(serializer = serialize_year)
+   rating   = Field()
+   title    = Field()
+   review_count = Field()
+   year     = Field()
    
 class MovieLoader(ItemLoader):
-   rank_in = Join()
+
+    default_item_class = MovieItem()
+
+    rank_in = Join()
+
+
+
