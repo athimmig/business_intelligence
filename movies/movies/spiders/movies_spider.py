@@ -1,7 +1,8 @@
 # ISSUES
 # * There is an extra "" item in the title list
-# * Ratings are split into separate characters
 # * Everything is still being output to in array format
+# * Rank is outputted as a unicode string (should be number)
+# 
 
 from scrapy.spider import Spider
 from scrapy.selector import Selector
@@ -9,8 +10,8 @@ from scrapy.contrib.loader import ItemLoader
 
 from movies.items import MovieItem, MovieLoader
 
-import re # RegEx
-
+import re
+ 
 class MovieSpider(Spider):
     name = "movie_spider"
     allowed_domains = ["http://www.rottentomatoes.com/"]
@@ -25,7 +26,7 @@ class MovieSpider(Spider):
         for movie in movies:
             loader = ItemLoader(MovieItem(), response = response, selector = movie)
 
-            loader.add_xpath('rank', 'td[1]/text()', re = r'{d}+') # exclude the '.'
+            loader.add_xpath('rank', 'td[1]/text()', re = r'\d{1,3}') # exclude the '.'
             loader.add_xpath('rating', 'td[2]/span/span[2]/text()', re = r'[^%]')
             loader.add_xpath('title', 'td[3]/a/text()', re = r'.*(?= \([0-9]{4}\))')
             loader.add_xpath('review_count', 'td[4]/text()')
