@@ -1,3 +1,8 @@
+# ISSUES
+# * There is an extra "" item in the title list
+# * Ratings are split into separate characters
+# * Everything is still being output to in array format
+
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
