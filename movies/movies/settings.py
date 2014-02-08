@@ -6,14 +6,23 @@
 #     http://doc.scrapy.org/en/latest/topics/settings.html
 #
 
-BOT_NAME = 'movie_bot'
-
-SPIDER_MODULES = ['movies.spiders']
+BOT_NAME        = 'movie_bot'
+BOT_VERSIONS    = '0.1'
+SPIDER_MODULES  = ['movies.spiders']
 NEWSPIDER_MODULE = 'movies.spiders'
 
 # Politeness
-CONCURRENT_REQUESTS = 1
+CONCURRENT_REQUESTS_PER_DOMAIN = 1
 DOWNLOAD_DELAY = 0.25
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'movies (+http://www.yourdomain.com)'
+
+# Pipeline
+ITEM_PIPELINES = {
+    # Lower numbers take greater precedence
+    
+    'movies.pipelines.WriteToJSONPipeline': 1000
+}
+
+LOG_FILE = 'movies_spider.log'

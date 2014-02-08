@@ -1,8 +1,2 @@
 #!/bin/bash
-
-if [ -f "movies.json" ]; then
-    echo -e 'Cleaning up previous output...\n'
-    rm movies.json
-fi
-
 scrapy crawl movie_spider -o movies.json -t json

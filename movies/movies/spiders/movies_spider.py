@@ -1,9 +1,3 @@
-# ISSUES
-# * There is an extra "" item in the title list
-# * Everything is still being output to in array format
-# * Rank is outputted as a unicode string (should be number)
-# 
-
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
@@ -18,21 +12,36 @@ class MovieSpider(Spider):
     start_urls = ["http://www.rottentomatoes.com/top/bestofrt/?category=1"]
 
     def parse(self, response):
-        sel = Selector(response)
 
-        # not sure if this needs editing
-        movies = sel.xpath('//table[@class="left rt_table"]/tbody/tr')
+        try:
+            sel = Selector(response)
 
-        for movie in movies:
-            loader = ItemLoader(MovieItem(), response = response, selector = movie)
+            # not sure if this needs editing
+            movies = sel.xpath('//table[@class="left rt_table"]/tbody/tr')
 
-            loader.add_xpath('rank', 'td[1]/text()', re = r'\d{1,3}') # exclude the '.'
-            loader.add_xpath('rating', 'td[2]/span/span[2]/text()', re = r'[^%]')
-            loader.add_xpath('title', 'td[3]/a/text()', re = r'.*(?= \([0-9]{4}\))')
-            loader.add_xpath('review_count', 'td[4]/text()')
-            loader.add_xpath('year', 'td[3]/a/text()', re = r'(?<=\()[0-9]{4}(?=\))')
+            # make sure we have a list of movies
+            if not movies:
+                self.log("Unable to find list of movies in {:s}.".format(response.request.url), level=log.ERROR)
 
-            yield loader.load_item()
+            for movie in movies:
+                
+                # Ignore the header row, which is the first row returned
+                if (movie.xpath('th')):
+                    continue
+
+                loader = ItemLoader(MovieItem(), response = response, selector = movie)
+
+                loader.add_xpath('rank', 'td[1]/text()', re = r'\d{1,3}') # exclude the '.'
+                loader.add_xpath('rating', 'td[2]/span/span[2]/text()', re = r'[^%]')
+                loader.add_xpath('title', 'td[3]/a/text()', re = r'.*(?= \([0-9]{4}\))')
+                loader.add_xpath('review_count', 'td[4]/text()')
+                loader.add_xpath('year', 'td[3]/a/text()', re = r'(?<=\()[0-9]{4}(?=\))')
+
+                yield loader.load_item()
+
+        except Exception as e:
+            # Log the exception then reraise it.
+            self.log("Could not parse URL '{:s}'".format(response.request.url), level=log.ERROR)
 
 # I learned that when you output a file when running scrapy,
 # it just appends to the file instead of overwriting it. I had the correct output

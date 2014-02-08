@@ -44,7 +44,7 @@ class MovieLoader(ItemLoader):
 
     default_item_class = MovieItem()
 
-    rank_in = Join()
+    #rank_in = Join()
 
 
 
