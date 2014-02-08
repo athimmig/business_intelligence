@@ -63,6 +63,7 @@ class MoviesPipeline(object):
         self.json_exporter = JsonLinesItemExporter(open('movies.json', 'wb'))
         self.json_exporter.start_exporting()
         print "EXPORTING"
+
     def process_item(self, item, spider):
         # store the item in the database
         insert_database(item)
@@ -71,7 +72,6 @@ class MoviesPipeline(object):
         #print "Exporting {:s} to JSON".format(item['title'])
 
         #self.json_exporter.export_item(item)
-
         return item
 
     def spider_closed(self, spider):

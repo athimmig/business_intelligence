@@ -41,10 +41,15 @@ def insert_database(movie):
     print "year:", type(year)
 
     # I think this is failing because the datatypes don't match
-    sql = """INSERT INTO movies
+    sql = """INSERT INTO %s
              VALUES 
-             (null, {:d}, {:d}, \"{:s}\", {:d}, {:d})""".format(
-             rank, rating, title, review_count, year)
+             (null, %d, %d, \"%s\", %d, %d)""" % (
+             MYSQL_TABLE,
+             rank,
+             rating,
+             title,
+             review_count,
+             year)
 
     print sql
     print "Trying to commit..."
@@ -74,10 +79,17 @@ except MySQLdb.Error, e:
     sys.exit(1)
 
 if (connection):
-    movie = {'rank': 1,
-            'rating': 100,
-            'title': "Pacific Rim",
-            'review_count': 84,
-            'year': 2013 }
+
+    rank = input('Rank: ')
+    rating = input('Rating: ')
+    title = raw_input('Title: ')
+    review_count = input('Review Count: ')
+    year = input('Year: ')
+
+    movie = {'rank': rank,
+            'rating': rating,
+            'title': title,
+            'review_count': review_count,
+            'year': year }
 
     insert_database(movie) #pass is movie once it's working
