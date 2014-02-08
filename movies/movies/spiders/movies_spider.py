@@ -5,7 +5,8 @@ from scrapy.contrib.loader import ItemLoader
 from movies.items import MovieItem, MovieLoader
 
 import re
- 
+import sys
+
 class MovieSpider(Spider):
     name = "movie_spider"
     allowed_domains = ["http://www.rottentomatoes.com/"]
@@ -23,8 +24,9 @@ class MovieSpider(Spider):
             if not movies:
                 self.log("Unable to find list of movies in {:s}.".format(response.request.url), level=log.ERROR)
 
+            items = []
+
             for movie in movies:
-                
                 # Ignore the header row, which is the first row returned
                 if (movie.xpath('th')):
                     continue
@@ -43,6 +45,3 @@ class MovieSpider(Spider):
             # Log the exception then reraise it.
             self.log("Could not parse URL '{:s}'".format(response.request.url), level=log.ERROR)
 
-# I learned that when you output a file when running scrapy,
-# it just appends to the file instead of overwriting it. I had the correct output
-# only it was way down in the file and I was seeing the old, buggy output on top

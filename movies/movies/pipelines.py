@@ -16,17 +16,33 @@ import settings # conn
 
 # Store data in database
 def insert_database(movie):
-    sql = "INSERT INTO %s VALUES (%s, %s, %s, %s, %s)" % (MYSQL_TABLE,
-          escape_string(movie['rank']),
-          escape_string(movie['rating']),
-          escape_string(movie['title']),
-          escape_string(movie['review_count']),
-          escape_string(movie['year']))
+    if not movie:
+        return
 
-    if cursor.execute(sql):
-        print "Inserted %s" % movie['title']
-    else:
-        print "Insertion Error"
+    cursor = connection.cursor()
+    
+    # Use prepared statements later
+    # Major problems with this section.
+
+    # TODO: Convert movie data to proper types
+    # Change %s to %d where appropriate
+    sql = """INSERT INTO %s VALUES 
+        (%s, %s, \"%s\", %s, %s)""" % (
+        MYSQL_TABLE,
+        movie['rank'],
+        movie['rating'],
+        movie['title'],
+        movie['review_count'],
+        movie['year'])
+
+    try:
+        cursor.execute(sql)
+        connection.commit()
+        print "Inserted record for %s" % movie['title']
+
+    except MySQLdb.Error, e:
+        print "Error %d: %s", ( e.args[0], e.args[1])
+        connection.rollback()
 
 # The MoviePipeline
 class MoviesPipeline(object):
@@ -46,7 +62,7 @@ class MoviesPipeline(object):
         # signals start of export
         self.json_exporter = JsonLinesItemExporter(open('movies.json', 'wb'))
         self.json_exporter.start_exporting()
-
+        print "EXPORTING"
     def process_item(self, item, spider):
         # store the item in the database
         insert_database(item)

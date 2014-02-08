@@ -21,7 +21,7 @@ MYSQL_PASSWORD = 'cangetin'
 
 # Open spider-database connection
 try:
-    conn = MySQLdb.connect(host = MYSQL_HOST,
+    connection = MySQLdb.connect(host = MYSQL_HOST,
                                 user = MYSQL_USER,
                                 passwd = MYSQL_PASSWORD,
                                 db = MYSQL_DB)
