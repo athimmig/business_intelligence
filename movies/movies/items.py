@@ -12,7 +12,6 @@ from scrapy.contrib.exporter import JsonItemExporter
 
 # Serializers
 # TODO: Add text parsing
-
 def serialize_rank(value):
     return str(value)
 
@@ -34,17 +33,15 @@ def serialize_year(value):
 class MovieItem(Item):
 
     # needs category
-   rank     = Field(serializer = serialize_rank)
-   rating   = Field()
-   title    = Field()
+   rank         = Field()
+   rating       = Field()
+   title        = Field()
    review_count = Field()
-   year     = Field()
+   year         = Field()
    
 class MovieLoader(ItemLoader):
 
     default_item_class = MovieItem()
-
-    #rank_in = Join()
 
 
 

@@ -1,2 +1,2 @@
 #!/bin/bash
-scrapy crawl movie_spider -o movies.json -t json
+scrapy crawl movie_spider 

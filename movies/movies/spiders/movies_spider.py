@@ -31,11 +31,11 @@ class MovieSpider(Spider):
 
                 loader = ItemLoader(MovieItem(), response = response, selector = movie)
 
-                loader.add_xpath('rank', 'td[1]/text()', re = r'\d{1,3}') # exclude the '.'
-                loader.add_xpath('rating', 'td[2]/span/span[2]/text()', re = r'[^%]')
-                loader.add_xpath('title', 'td[3]/a/text()', re = r'.*(?= \([0-9]{4}\))')
+                loader.add_xpath('rank', 'td[1]/text()', re = r'\d+') # ignore the '.'
+                loader.add_xpath('rating', 'td[2]/span/span[2]/text()', re = r'\d+')
+                loader.add_xpath('title', 'td[3]/a/text()' ) #, re = r'.*(?= \([0-9]{4}\))')
                 loader.add_xpath('review_count', 'td[4]/text()')
-                loader.add_xpath('year', 'td[3]/a/text()', re = r'(?<=\()[0-9]{4}(?=\))')
+                loader.add_xpath('year', 'td[3]/a/text()', re = r'\d{4}(?=\)$)')
 
                 yield loader.load_item()
 
