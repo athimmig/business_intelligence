@@ -1,11 +1,14 @@
 #Movie Scraper
 
+##Highlights
+* I finally got it to scrape items into the database!
+
 ## To Do
-* Create item pipeline for storing in database
-* Scrape additional details about the movie.
-* Edit crawl bash script to detect and delete file.
+* Beef up the scraped data
+    * Scrape additional details about the movie.
+    * Scrape more categories
+* Remove year from movie titles
 
 ## Issues
-* All data in the dicts is still being dumped to a string in dict format.
 
 ## Questions

@@ -16,32 +16,31 @@ import settings # conn
 
 # Store data in database
 def insert_database(movie):
-    if not movie:
+    if not movie: # doubt I really need this, but just in case...
         return
 
     cursor = connection.cursor()
     
     # Use prepared statements later
-    # Major problems with this section.
+    rank        = int(movie['rank'][0])
+    rating      = int(movie['rating'][0])
+    title       = str(movie['title'][0])
+    review_count = int(movie['review_count'][0])
+    year        = int(movie['year'][0])
 
-    # TODO: Convert movie data to proper types
     # Change %s to %d where appropriate
     sql = """INSERT INTO %s VALUES 
-        (%s, %s, \"%s\", %s, %s)""" % (
+        (null, %d, %d, \"%s\", %d, %d)""" % (
         MYSQL_TABLE,
-        movie['rank'],
-        movie['rating'],
-        movie['title'],
-        movie['review_count'],
-        movie['year'])
+        rank, rating, title, review_count, year)
 
     try:
         cursor.execute(sql)
         connection.commit()
-        print "Inserted record for %s" % movie['title']
+        print "Inserted record for %s" % title
 
     except MySQLdb.Error, e:
-        print "Error %d: %s", ( e.args[0], e.args[1])
+        print "Error %d: %s" % ( e.args[0], e.args[1])
         connection.rollback()
 
 # The MoviePipeline
@@ -62,16 +61,14 @@ class MoviesPipeline(object):
         # signals start of export
         self.json_exporter = JsonLinesItemExporter(open('movies.json', 'wb'))
         self.json_exporter.start_exporting()
-        print "EXPORTING"
 
     def process_item(self, item, spider):
         # store the item in the database
         insert_database(item)
 
-        # Code below will write to file
-        #print "Exporting {:s} to JSON".format(item['title'])
+        # Write to JSON file
+        self.json_exporter.export_item(item)
 
-        #self.json_exporter.export_item(item)
         return item
 
     def spider_closed(self, spider):

@@ -25,8 +25,7 @@ try:
                                 user = MYSQL_USER,
                                 passwd = MYSQL_PASSWORD,
                                 db = MYSQL_DB)
-    print "Connected."
-
+    # Silence is golden.
 except MySQLdb.Error, e:
     print "Unable to connect to database."
     print "Error %d: %s" % (e.args[0], e.args[1])

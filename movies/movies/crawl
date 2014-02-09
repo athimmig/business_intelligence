@@ -1,2 +1,11 @@
 #!/bin/bash
+
+JSON_FILE = "movies.json"
+
+if [ -f $JSON_FILE ]; then
+    echo "Cleaning old JSON data..."
+    rm -f $JSON_FILE
+fi
+
+# Crawl
 scrapy crawl movie_spider 
