@@ -10,5 +10,6 @@
 * Remove year from movie titles
 
 ## Issues
+* Category 1: Spider misses scraping record 28.
 
 ## Questions

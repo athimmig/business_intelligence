@@ -12,6 +12,24 @@ class MovieSpider(Spider):
     allowed_domains = ["http://www.rottentomatoes.com/"]
     start_urls = ["http://www.rottentomatoes.com/top/bestofrt/?category=1"]
 
+    ''' Additional pagess:
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=2",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=3",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=4",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=5",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=6",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=7",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=8",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=9",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=10",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=11",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=12",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=13",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=14",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=15",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=16",
+                    "http://www.rottentomatoes.com/top/bestofrt/?category=17",'''
+
     def parse(self, response):
 
         try:
@@ -35,7 +53,7 @@ class MovieSpider(Spider):
 
                 loader.add_xpath('rank', 'td[1]/text()', re = r'\d+') # ignore the '.'
                 loader.add_xpath('rating', 'td[2]/span/span[2]/text()', re = r'\d+')
-                loader.add_xpath('title', 'td[3]/a/text()' ) #, re = r'.*(?= \([0-9]{4}\))')
+                loader.add_xpath('title', 'td[3]/a/text()', re = r'.*(?= \([0-9]{4}\))')
                 loader.add_xpath('review_count', 'td[4]/text()')
                 loader.add_xpath('year', 'td[3]/a/text()', re = r'\d{4}(?=\)$)')
 

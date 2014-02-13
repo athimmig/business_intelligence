@@ -33,12 +33,20 @@ def serialize_year(value):
 class MovieItem(Item):
 
     # needs category
-   rank         = Field()
-   rating       = Field()
-   title        = Field()
-   review_count = Field()
+   rank         = Field()   # Ranking on RottenTomatoes
+   rating       = Field()   # Rating
+   title        = Field()   # Movie title
+   review_count = Field()   # How many reviews are on RottenTomatoes.
    year         = Field()
-   
+
+   # To Add
+   # =========
+   # Category
+   # Synopsis
+   # Link to rating on RottenTomatoes
+   # MPAA rating
+   # Pull the sex-violence-language rating from kids-in-mind.
+
 class MovieLoader(ItemLoader):
 
     default_item_class = MovieItem()
