@@ -62,6 +62,23 @@ class MoviesPipeline(object):
         self.json_exporter = JsonLinesItemExporter(open('movies.json', 'wb'))
         self.json_exporter.start_exporting()
 
+        # Since the charts frequently change, we need to deal with differences
+        # in the cached data and current data. 
+        # For now, we'll just truncate the table when the spider opens
+        # and dump everything in.
+
+        cursor = connection.cursor()
+
+        sql = 'truncate table %s' % MYSQL_TABLE
+
+        try:
+            cursor.execute(sql)
+            connection.commit()
+            print "Truncated %s Table" % MYSQL_TABLE
+        except:
+            print "Error %d %s" % (e.args[0], e.args[1])
+            connection.rollback()
+
     def process_item(self, item, spider):
         # store the item in the database
         insert_database(item)
