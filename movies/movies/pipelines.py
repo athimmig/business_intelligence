@@ -22,17 +22,22 @@ def insert_database(movie):
     cursor = connection.cursor()
     
     # Use prepared statements later
-    rank        = int(movie['rank'][0])
-    rating      = int(movie['rating'][0])
-    title       = str(movie['title'][0])
+    rank = int(movie['rank'][0])
+    rating_tomatoes = int(movie['rating_tomatoes'][0])
+    title = str(movie['title'][0])
     review_count = int(movie['review_count'][0])
-    year        = int(movie['year'][0])
+    year = int(movie['year'][0])
+    category = str(movie['category'][0])
 
     # Change %s to %d where appropriate
-    sql = """INSERT INTO %s VALUES 
-        (null, %d, %d, \"%s\", %d, %d)""" % (
-        MYSQL_TABLE,
-        rank, rating, title, review_count, year)
+    sql = """INSERT INTO {:s} 
+        (id, rank, rating_tomatoes, title, review_count, year, category)
+        VALUES 
+        (null, {:d}, {:d}, \"{:s}\", {:d}, {:d}, \"{:s}\")""".format(MYSQL_TABLE,
+        rank, rating_tomatoes, title, review_count, year, category)
+
+    # Debug the SQL statement if needed:
+    # print sql
 
     try:
         cursor.execute(sql)
@@ -59,6 +64,9 @@ class MoviesPipeline(object):
 
     def spider_opened(self, spider):
         # signals start of export
+
+        print "Spider opened...\nPreparing to crawl..."
+
         self.json_exporter = JsonLinesItemExporter(open('movies.json', 'wb'))
         self.json_exporter.start_exporting()
 
@@ -74,7 +82,7 @@ class MoviesPipeline(object):
         try:
             cursor.execute(sql)
             connection.commit()
-            print "Truncated %s Table" % MYSQL_TABLE
+            print "*** Truncated %s Table ***" % MYSQL_TABLE
         except:
             print "Error %d %s" % (e.args[0], e.args[1])
             connection.rollback()

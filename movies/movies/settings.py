@@ -1,4 +1,4 @@
-# Scrapy settings for movies project
+2# Scrapy settings for movies project
 #
 # For simplicity, this file contains only the most important settings by
 # default. All the other settings are documented here:
@@ -33,7 +33,8 @@ except MySQLdb.Error, e:
 
 # Politeness
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
-DOWNLOAD_DELAY = 0.25
+DOWNLOAD_DELAY = 1 # delay 1 second for download times
+ROBOTSTXT_OBEY = True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'movies (+http://www.yourdomain.com)'

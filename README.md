@@ -7,9 +7,9 @@
 * Beef up the scraped data
     * Scrape additional details about the movie.
     * Scrape more categories
-* Remove year from movie titles
 
 ## Issues
-* Category 1: Spider misses scraping record 28.
+* Category 1: Spider misses scraping record 28
+    * Title: Kumonosu Jô (Throne of Blood) (Macbeth) (1957)
 
 ## Questions
