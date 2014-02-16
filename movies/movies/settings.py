@@ -33,7 +33,7 @@ except MySQLdb.Error, e:
 
 # Politeness
 CONCURRENT_REQUESTS_PER_DOMAIN = 1
-DOWNLOAD_DELAY = 1 # delay 1 second for download times
+DOWNLOAD_DELAY = .25 # delay 1 second for download times
 ROBOTSTXT_OBEY = True
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

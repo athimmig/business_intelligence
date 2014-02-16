@@ -3,6 +3,7 @@ from scrapy import log
 from scrapy.spider import Spider
 from scrapy.selector import Selector
 from scrapy.contrib.loader import ItemLoader
+from scrapy.http import Request # for processing details
 
 from movies.items import MovieItem, MovieLoader
 
@@ -11,7 +12,7 @@ import sys
 
 class MovieSpider(Spider):
     name = "movie_spider"
-    allowed_domains = ["http://www.rottentomatoes.com/"]
+    allowed_domains = ["rottentomatoes.com"]
     start_urls = ["http://www.rottentomatoes.com/top/bestofrt/?category=1"]
 
     ''' Additional pages:
@@ -31,6 +32,9 @@ class MovieSpider(Spider):
                     "http://www.rottentomatoes.com/top/bestofrt/?category=15",
                     "http://www.rottentomatoes.com/top/bestofrt/?category=16",
                     "http://www.rottentomatoes.com/top/bestofrt/?category=17",'''
+
+    def __init__(self):
+        self.item_loader_buffer = {}
 
     def parse(self, response):
 
@@ -65,16 +69,27 @@ class MovieSpider(Spider):
                 loader.add_xpath('review_count', 'td[4]/text()')
                 loader.add_xpath('year', 'td[3]/a/text()', re = r'\d{4}(?=\)$)')
 
+                # Store the item loader into the temporary buffer while we step away from the function
+                self.item_loader_buffer[details_href] = loader
+
+                try:
+                    # Request additional information on the movie
+                    print "Requesting additional information at %s" % details_href
+                    yield Request(url=details_href, callback=self.parse_movie_details)
+                except Exception as e:
+                    print e
+
+                # Load the item 
                 yield loader.load_item()
-                # yield Request(url=details_href, callback=self.parse_movie_details)
 
         except Exception as e:
-            # Log the exception then reraise it.
-            log("Could not parse URL '{:s}'".format(response.request.url), level=log.ERROR)
+            print "Error: ", e
+            # log("Could not parse URL '{:s}'".format(response.request.url), level=log.ERROR)
 
-        def parse_movie_details(self, response, loader):
+    def parse_movie_details(self, response):
+        # Process further details here
+        print response
+        # Rating xpath: sel.xpath('//span[@itemprop="contentRating"]/text()').extract()
 
-            # Process further details here
-
-            yield loader.load_item()
+        return None
 

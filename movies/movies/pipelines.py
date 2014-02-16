@@ -3,7 +3,7 @@
 # Don't forget to add your pipeline to the ITEM_PIPELINES setting
 # See: http://doc.scrapy.org/en/latest/topics/item-pipeline.html
 
-from scrapy import signals
+from scrapy import signals, log
 from scrapy.exceptions import DropItem
 from scrapy.contrib.exporter import JsonLinesItemExporter
 
@@ -42,7 +42,7 @@ def insert_database(movie):
     try:
         cursor.execute(sql)
         connection.commit()
-        print "Inserted record for %s" % title
+        print "Scraped information for %s" % title
 
     except MySQLdb.Error, e:
         print "Error %d: %s" % ( e.args[0], e.args[1])
@@ -67,8 +67,7 @@ class MoviesPipeline(object):
 
         print "Spider opened...\nPreparing to crawl..."
 
-        self.json_exporter = JsonLinesItemExporter(open('movies.json', 'wb'))
-        self.json_exporter.start_exporting()
+
 
         # Since the charts frequently change, we need to deal with differences
         # in the cached data and current data. 
@@ -90,13 +89,9 @@ class MoviesPipeline(object):
     def process_item(self, item, spider):
         # store the item in the database
         insert_database(item)
-
-        # Write to JSON file
-        self.json_exporter.export_item(item)
-
         return item
 
     def spider_closed(self, spider):
         # signal end of export
-        self.json_exporter = finish_exporting()
+        return None
 

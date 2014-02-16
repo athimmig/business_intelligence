@@ -1,6 +1,12 @@
 #!/bin/bash
 
-$JSON_FILE="movies.json"
+JSON_FILE="movies.json"
+LOG_FILE="movies_spider.log"
+
+if [ -f $LOG_FILE ]; then
+	echo "Clearing log file..."
+	>$LOG_FILE
+fi
 
 if [ -f $JSON_FILE ]; then
     echo "Cleaning old JSON data..."
